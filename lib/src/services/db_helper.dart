@@ -16,12 +16,22 @@ class DBHelper {
     );
   }
 
+  static Future<void> deleteAllRecords() async {
+    final db = await DBHelper.database();
+
+    // Delete all records
+    await db.delete('celestial_bodies');
+
+    // Reset the ID counter
+    await db.setVersion(1);
+  }
+
   static Future<void> saveCelestialBody(CelestialBody celestialBody) async {
     final db = await DBHelper.database();
     final List<Map<String, dynamic>> maps = await db.query(
       'celestial_bodies',
-      where: 'name = ?',
-      whereArgs: [celestialBody.name],
+      where: 'id = ?',
+      whereArgs: [celestialBody.id],
     );
     if (maps.isNotEmpty) {
       await db.update(

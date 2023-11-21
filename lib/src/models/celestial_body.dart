@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 class CelestialBody {
-  final int id;
+  final int? id;
   final String name;
   final String description;
   final String type;
@@ -12,7 +12,7 @@ class CelestialBody {
   final String imagePath;
 
   CelestialBody({
-    required this.id,
+    this.id,
     required this.name,
     required this.description,
     required this.type,
