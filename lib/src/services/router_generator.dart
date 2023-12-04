@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_astronomy/src/pages/main_screen.dart';
+import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
+import 'package:flutter_app_astronomy/src/services/screen_reference.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    // Getting arguments passed in while calling Navigator.pushNamed
+    // ignore: unused_local_variable
     final args = settings.arguments;
 
     switch (settings.name) {
-      case '/':
-          return MaterialPageRoute(builder: (_) => MainScreen());
-      case '/second':
-        // Validation of correct data type
-        if (args is String) {
-          /* return MaterialPageRoute(
-            builder: (_) => SecondPage(
-                  data: args,
-                ),
-          );*/
+      // case '/image':
+      //   return MaterialPageRoute(builder: (_) => const ImageGridView());
+      case '/home':
+        return MaterialPageRoute(builder: (_) => HomeScreen());
+      case '/details':
+        if (args is CelestialBody) {
+          return MaterialPageRoute(
+              builder: (_) => DetailsScreen(
+                    celestialBody: args,
+                  ));
         }
-        // If args is not of the correct type, return an error page.
-        // You can also throw an exception while in development.
         return _errorRoute();
+
       default:
-        // If there is no such named route in the switch statement, e.g. /third
         return _errorRoute();
     }
   }
@@ -31,9 +30,9 @@ class RouteGenerator {
     return MaterialPageRoute(builder: (_) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Error'),
+          title: const Text('Error'),
         ),
-        body: Center(
+        body: const Center(
           child: Text('ERROR'),
         ),
       );
