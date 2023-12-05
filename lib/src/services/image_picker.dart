@@ -73,16 +73,45 @@ class ImagePickerService {
                 onPressed: () async {
                   Navigator.of(context).pop(); // close the dialog
                   await pickImageByFile(selectedId: selectedCelestialBody);
-                  // showDialog(
-                  //   context: context,
-                  //   builder: (BuildContext context) {
-                  //     return const AlertDialog(
-                  //       title: Text('Success'),
-                  //       content: Text('Image uploaded successfully'),
-                  //     );
-                  //   },
-                  // );
                 },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> openSinglePickerDialog(int celestialBody) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add new photo '),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.camera),
+                  label: const Text('Camera'),
+                  onPressed: () async {
+                    Navigator.of(context).pop(); // close the dialog
+                    await pickImageByCamera(selectedId: celestialBody);
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.image),
+                  label: const Text('Gallery'),
+                  onPressed: () async {
+                    Navigator.of(context).pop(); // close the dialog
+                    await pickImageByFile(selectedId: celestialBody);
+                  },
+                ),
               ),
             ],
           ),

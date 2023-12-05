@@ -30,6 +30,7 @@ class DetailsScreen extends StatefulWidget {
 
 class _DetailsScreenState extends State<DetailsScreen>
     with SingleTickerProviderStateMixin {
+      GlobalKey refreshKey = GlobalKey();
   late TabController tabController;
   int selectedIndex = 0;
 
@@ -44,7 +45,7 @@ class _DetailsScreenState extends State<DetailsScreen>
   Widget build(BuildContext context) {
     List<Widget> widgetOptions = <Widget>[
       planetOverall(MediaQuery.of(context).size, context),
-      CelestialBodiesImageGrid(celestialBodyId: widget.celestialBody.id!),
+      CelestialBodiesImageGrid(celestialBodyId: widget.celestialBody.id!, ),
       const Center(child: Text("c deisote"))
     ];
 
@@ -124,6 +125,7 @@ class _DetailsScreenState extends State<DetailsScreen>
       color: appTheme.deepOrange300,
       height: MediaQuery.of(context).size.height - 200,
       child: CelestialBodiesImageGrid(
+        
           celestialBodyId: widget.celestialBody.id!), //This is an image grid
     );
   }
