@@ -7,6 +7,8 @@ class ImageConstant {
 
   static String imgCard = '$imagePath/img_card.png';
 
+  static String imgTierra = '$imagePath/tierra.png';
+
   static String svgActionbar = '$imagePath/img_actionbar.svg';
 
   static String imgImage = '$imagePath/img_image.png';

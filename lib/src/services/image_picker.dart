@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_astronomy/src/models/celestial_body_photo.dart';
@@ -14,6 +16,7 @@ class ImagePickerService {
   final BuildContext context;
   int selectedCelestialBody = 0;
   String? selectedImagePath; // Add this variable
+  String? imagePath;
 
   // Future<void> openPickerDialog() async {
   //   return showDialog(
@@ -122,7 +125,9 @@ class ImagePickerService {
   }
 
   Future<String?> openPickerDialogAddPlanet() async {
-    return showDialog(
+    final Completer<String?> completer = Completer();
+
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -136,9 +141,9 @@ class ImagePickerService {
                   icon: const Icon(Icons.camera),
                   label: const Text('Camera'),
                   onPressed: () async {
-                    Navigator.of(context).pop(); // close the dialog
-                    return await pickImageByCamera(
-                        selectedId: selectedCelestialBody);
+                    final path = await pickImageCameraForm();
+                    completer.complete(path);
+                    Navigator.of(context).pop();
                   },
                 ),
               ),
@@ -146,9 +151,9 @@ class ImagePickerService {
                 icon: const Icon(Icons.image),
                 label: const Text('Gallery'),
                 onPressed: () async {
-                  Navigator.of(context).pop(); // close the dialog
-                  return await pickImageByFile(
-                      selectedId: selectedCelestialBody);
+                  final path = await pickImageFileForm();
+                  completer.complete(path);
+                  Navigator.of(context).pop();
                 },
               ),
             ],
@@ -156,6 +161,20 @@ class ImagePickerService {
         );
       },
     );
+
+    return completer.future;
+  }
+
+  Future<String> pickImageFileForm() async {
+    final image = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, requestFullMetadata: true);
+    return image!.path;
+  }
+
+  Future<String> pickImageCameraForm() async {
+    final image = await ImagePicker()
+        .pickImage(source: ImageSource.camera, requestFullMetadata: true);
+    return image!.path;
   }
 
   Future<void> pickImageByFile({required int selectedId}) async {

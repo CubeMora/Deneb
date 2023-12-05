@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
+import 'package:flutter_app_astronomy/src/models/celestial_system.dart';
 
 // ignore: must_be_immutable
 class HomepageItemWidget extends StatelessWidget {
   const HomepageItemWidget({
     super.key,
-    required this.celestialBody,
+    required this.celestialSystem,
   });
-  final CelestialBody celestialBody;
+  final CelestialSystem celestialSystem;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class HomepageItemWidget extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(100.0),
                 child: Image.asset(
-                  celestialBody.image,
+                  celestialSystem.image,
                   height: 100,
                   width: 100,
                   fit: BoxFit.cover,
@@ -37,7 +38,7 @@ class HomepageItemWidget extends StatelessWidget {
             ),
             const SizedBox(height: 9),
             Text(
-              celestialBody.name,
+              celestialSystem.name,
             ),
           ],
         ),
