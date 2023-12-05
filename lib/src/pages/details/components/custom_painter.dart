@@ -3,7 +3,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 class RPSCustomPainter extends CustomPainter{
-  
+  final Color gradientColor;
+
+  RPSCustomPainter({super.repaint, required this.gradientColor});
   @override
   void paint(Canvas canvas, Size size) {
     
@@ -17,7 +19,7 @@ class RPSCustomPainter extends CustomPainter{
       ..strokeWidth = size.width*0.00
       ..strokeCap = StrokeCap.butt
       ..strokeJoin = StrokeJoin.miter;
-    paint_fill_1.shader = ui.Gradient.linear(Offset(size.width*0.50,size.height*-0.00),Offset(size.width*0.50,size.height*0.39),[Color(0xffdf4143),Color(0xffffeeee)],[0.00,1.00]); 
+    paint_fill_1.shader = ui.Gradient.linear(Offset(size.width*0.50,size.height*-0.00),Offset(size.width*0.50,size.height*0.39),[gradientColor,Color(0xffffeeee)],[0.00,1.00]); 
          
     Path path_1 = Path();
     path_1.moveTo(size.width*-0.0061000,size.height*0.1660167);

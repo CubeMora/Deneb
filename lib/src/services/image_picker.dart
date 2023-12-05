@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_astronomy/src/models/celestial_body_photo.dart';
@@ -14,75 +16,106 @@ class ImagePickerService {
   final BuildContext context;
   int selectedCelestialBody = 0;
   String? selectedImagePath; // Add this variable
+  String? imagePath;
 
-  Future<void> openPickerDialog() async {
+  // Future<void> openPickerDialog() async {
+  //   return showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: const Text('Add new photo'),
+  //         content: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: <Widget>[
+  //             SingleChildScrollView(
+  //               scrollDirection: Axis.horizontal,
+  //               child: Row(
+  //                 children: List.generate(
+  //                   LocalData().celestialBodyList.length,
+  //                   (index) {
+  //                     final CelestialBody celestialBody =
+  //                         LocalData().celestialBodyList[index];
+  //                     return GestureDetector(
+  //                       onTap: () {
+  //                         selectedCelestialBody = celestialBody.id!;
+  //                       },
+  //                       child: Padding(
+  //                         padding: const EdgeInsets.all(12.0),
+  //                         child: Card(
+  //                           margin: EdgeInsets.all(20.0),
+  //                           color: appTheme.orange50,
+  //                           elevation: 3.0,
+  //                           child: Text(celestialBody.id.toString()),
+  //                         ),
+  //                       ),
+  //                     );
+  //                   },
+  //                 ),
+  //               ),
+  //             ),
+  //             ElevatedButton.icon(
+  //               icon: const Icon(Icons.camera),
+  //               label: const Text('Camera'),
+  //               onPressed: () async {
+  //                 Navigator.of(context).pop(); // close the dialog
+  //                 await pickImageByCamera(selectedId: selectedCelestialBody);
+  //                 showDialog(
+  //                   context: context,
+  //                   builder: (BuildContext context) {
+  //                     return const AlertDialog(
+  //                       title: Text('Success'),
+  //                       content: Text('Image uploaded successfully'),
+  //                     );
+  //                   },
+  //                 );
+  //               },
+  //             ),
+  //             ElevatedButton.icon(
+  //               icon: const Icon(Icons.image),
+  //               label: const Text('Gallery'),
+  //               onPressed: () async {
+  //                 Navigator.of(context).pop(); // close the dialog
+  //                 await pickImageByFile(selectedId: selectedCelestialBody);
+
+  //               },
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
+  Future<void> openSinglePickerDialog(int celestialBody) async {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add new photo'),
+          title: Text('Add new photo '),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.generate(
-                    LocalData().celestialBodyList.length,
-                    (index) {
-                      final CelestialBody celestialBody =
-                          LocalData().celestialBodyList[index];
-                      return GestureDetector(
-                        onTap: () {
-                          selectedCelestialBody = celestialBody.id!;
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Card(
-                            margin: EdgeInsets.all(20.0),
-                            color: appTheme.orange50,
-                            elevation: 3.0,
-                            child: Text(celestialBody.id.toString()),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.camera),
+                  label: const Text('Camera'),
+                  onPressed: () async {
+                    Navigator.of(context).pop(); // close the dialog
+                    await pickImageByCamera(selectedId: celestialBody);
+                  },
                 ),
               ),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.camera),
-                label: const Text('Camera'),
-                onPressed: () async {
-                  Navigator.of(context).pop(); // close the dialog
-                  await pickImageByCamera(selectedId: selectedCelestialBody);
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const AlertDialog(
-                        title: Text('Success'),
-                        content: Text('Image uploaded successfully'),
-                      );
-                    },
-                  );
-                },
-              ),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.image),
-                label: const Text('Gallery'),
-                onPressed: () async {
-                  Navigator.of(context).pop(); // close the dialog
-                  await pickImageByFile(selectedId: selectedCelestialBody);
-                  // showDialog(
-                  //   context: context,
-                  //   builder: (BuildContext context) {
-                  //     return const AlertDialog(
-                  //       title: Text('Success'),
-                  //       content: Text('Image uploaded successfully'),
-                  //     );
-                  //   },
-                  // );
-                },
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.image),
+                  label: const Text('Gallery'),
+                  onPressed: () async {
+                    Navigator.of(context).pop(); // close the dialog
+                    await pickImageByFile(selectedId: celestialBody);
+                  },
+                ),
               ),
             ],
           ),
@@ -92,7 +125,9 @@ class ImagePickerService {
   }
 
   Future<String?> openPickerDialogAddPlanet() async {
-    return showDialog(
+    final Completer<String?> completer = Completer();
+
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -106,9 +141,9 @@ class ImagePickerService {
                   icon: const Icon(Icons.camera),
                   label: const Text('Camera'),
                   onPressed: () async {
-                    Navigator.of(context).pop(); // close the dialog
-                    return await pickImageByCamera(
-                        selectedId: selectedCelestialBody);
+                    final path = await pickImageCameraForm();
+                    completer.complete(path);
+                    Navigator.of(context).pop();
                   },
                 ),
               ),
@@ -116,9 +151,9 @@ class ImagePickerService {
                 icon: const Icon(Icons.image),
                 label: const Text('Gallery'),
                 onPressed: () async {
-                  Navigator.of(context).pop(); // close the dialog
-                  return await pickImageByFile(
-                      selectedId: selectedCelestialBody);
+                  final path = await pickImageFileForm();
+                  completer.complete(path);
+                  Navigator.of(context).pop();
                 },
               ),
             ],
@@ -126,6 +161,20 @@ class ImagePickerService {
         );
       },
     );
+
+    return completer.future;
+  }
+
+  Future<String> pickImageFileForm() async {
+    final image = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, requestFullMetadata: true);
+    return image!.path;
+  }
+
+  Future<String> pickImageCameraForm() async {
+    final image = await ImagePicker()
+        .pickImage(source: ImageSource.camera, requestFullMetadata: true);
+    return image!.path;
   }
 
   Future<void> pickImageByFile({required int selectedId}) async {
