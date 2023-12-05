@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_app_astronomy/src/services/image_picker.dart';
 
 import 'package:flutter_app_astronomy/src/services/local_data.dart';
@@ -7,15 +8,35 @@ import 'package:flutter_app_astronomy/src/services/theme_helper.dart';
 import 'package:flutter_app_astronomy/src/settings/constants/constants.dart';
 import 'package:flutter_app_astronomy/src/settings/constants/image_constant.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
+import 'package:flutter_app_astronomy/src/services/db_helper.dart';
 
 import 'components/custom_app_bar.dart';
 import 'components/homepage_item_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late List<CelestialBody> celestialBodies;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCelestialBodies();
+  }
+
+  Future<void> _loadCelestialBodies() async {
+    celestialBodies = await DBHelper.getCelestialBodies();
+    setState(() {});
+  }
+
   final ColorFilter _colorFilter =
       const ColorFilter.mode(Colors.grey, BlendMode.srcIn);
-
-  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +53,12 @@ class HomeScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
-                    LocalData().celestialBodyList.length + 1, (index) {
+                        LocalData().celestialBodyList.length + 1, (index) {
                   if (index == LocalData().celestialBodyList.length) {
                     // This is the extra container with the plus icon
                     return GestureDetector(
                       onTap: () {
-                        ImagePickerService(
-                          context,
-                        ).openPickerDialog();
+                        ImagePickerService(context).openPickerDialog();
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
                           content: Text('Added'),
@@ -83,8 +102,17 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  );
-                }),
+                  )
+                      .animate()
+                      .moveX(
+                          begin: 80.0,
+                          delay: Duration(milliseconds: 300 * index))
+                      .fadeIn(duration: Duration(milliseconds: 220 * index));
+                })
+                    .animate()
+                    .moveX(
+                        begin: 30.0, delay: const Duration(milliseconds: 100))
+                    .fadeIn(duration: const Duration(milliseconds: 220)),
               ),
             ),
           ),
@@ -93,13 +121,6 @@ class HomeScreen extends StatelessWidget {
           _buildHomePage(context)
         ],
       ),
-      // bottomNavigationBar: Padding(
-      //   padding: const EdgeInsets.only(left: 30.0, right: 30),
-      //   child: Divider(
-      //     color: Colors.grey.shade700,
-      //     thickness: 5,
-      //   ),
-      // ),
     );
   }
 
@@ -132,7 +153,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  //Makes the appbar based on a custom app bar located on local custom widget
+  ///+Makes the appbar based on a custom app bar located on local custom widget
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return CustomAppBar(
       title: const Padding(
