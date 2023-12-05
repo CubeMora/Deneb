@@ -1,9 +1,8 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
 import 'package:flutter_app_astronomy/src/services/db_helper.dart';
 import 'package:flutter_app_astronomy/src/settings/constants/image_constant.dart';
+import 'package:flutter_app_astronomy/src/services/db_helper.dart';
 
 class LocalData {
 
