@@ -56,15 +56,6 @@ class ImagePickerService {
                 onPressed: () async {
                   Navigator.of(context).pop(); // close the dialog
                   await pickImageByCamera(selectedId: selectedCelestialBody);
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const AlertDialog(
-                        title: Text('Success'),
-                        content: Text('Image uploaded successfully'),
-                      );
-                    },
-                  );
                 },
               ),
               ElevatedButton.icon(
