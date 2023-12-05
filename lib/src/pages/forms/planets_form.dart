@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app_astronomy/src/services/local_data.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_app_astronomy/src/services/image_picker.dart';
 import 'package:flutter_app_astronomy/src/services/db_helper.dart';
@@ -34,7 +35,15 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
     Colors.pink
   ];
   final List<String> majorityNatureOptions = ['Rock', 'Gas', 'Liquid', 'Solid'];
-  final List<String> typeOptions = ['System', 'Star', 'Planet', 'Asteroid', 'Comet' , 'Moon', 'Unknown'];
+  final List<String> typeOptions = [
+    'System',
+    'Star',
+    'Planet',
+    'Asteroid',
+    'Comet',
+    'Moon',
+    'Unknown'
+  ];
 
   Color selectedColor = Colors.red; // Default color
   String selectedMajorityNature = 'Rock'; // Default majorityNature
@@ -68,16 +77,27 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false); return false;},
+      onWillPop: () async {
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        return false;
+      },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.orange[50],
         appBar: AppBar(
-          title: Text("Add New Planet"),
+          title: const Text("Add New Planet"),
           backgroundColor: Colors.orange[50],
-          leading: IconButton(onPressed: () => Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false), icon: const Icon(LineIcons.arrowLeft)),
+          leading: IconButton(
+              onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                  context, '/home', (route) => false),
+              icon: const Icon(LineIcons.arrowLeft)),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -110,7 +130,8 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                         decoration: InputDecoration(
                           hintText: "Description",
                           prefixIcon: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: SvgPicture.asset("assets/icons/heart.svg"),
                           ),
                         ),
@@ -122,12 +143,13 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                           child: TextFormField(
                             controller: _sizeController,
                             keyboardType: TextInputType.number,
-                            validator: (size) =>
-                                size!.isEmpty ? 'This input is mandatory' : null,
+                            validator: (size) => size!.isEmpty
+                                ? 'This input is mandatory'
+                                : null,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly
                             ],
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: "Size (KM)",
                             ),
                           ),
@@ -145,14 +167,14 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                             validator: (distance) => distance!.isEmpty
                                 ? 'This input is mandatory'
                                 : null,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: "Distance from earth (KM)",
                             ),
                           ),
                         ),
                       ],
                     ),
-    
+
                     // selecting color
                     Padding(
                       padding: const EdgeInsets.only(top: 20),
@@ -170,12 +192,12 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                             selectedColorName = value!;
                           });
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Color',
                         ),
                       ),
                     ),
-    
+
                     //  majorityNature
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20),
@@ -192,12 +214,12 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                             selectedMajorityNature = value!;
                           });
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Majority Nature',
                         ),
                       ),
                     ),
-    
+
                     // selecting type
                     DropdownButtonFormField<String>(
                       value: selectedType,
@@ -212,7 +234,7 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                           selectedType = value!;
                         });
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Type',
                       ),
                     ),
@@ -223,28 +245,30 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: OutlinedButton.icon(
                   icon: SvgPicture.asset("assets/icons/heart.svg"),
-                  label: Text("Upload Photo"),
+                  label: const Text("Upload Photo"),
                   onPressed: () async {
-                    selectedImagePath = await ImagePickerService(context)
-                        .openPickerDialogAddPlanet();
-    
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Selected'),
-                    ));
+                   
+
+                   
+                      selectedImagePath = await ImagePickerService(context)
+                          .openPickerDialogAddPlanet();
+                          print(selectedImagePath);
+                    
                   },
                 ),
               ),
               ElevatedButton(
                 onPressed: () async {
+                    print(selectedImagePath);
                   if (_formKey.currentState?.validate() == true) {
                     _formKey.currentState?.save();
-    
+
                     final CelestialBody celestialBody = CelestialBody(
                       name: _nameController.text,
                       description: _descriptionController.text,
                       size: double.parse(_sizeController.text),
                       distanceFromEarth: double.parse(_distanceController.text),
-                      image: selectedImagePath ?? ImageConstant.gifKram,
+                      image: ImageConstant.gifKram, //selectedImagePath ?? 
                       color:
                           selectedColor, // Utiliza el color seleccionado del dropdown
                       majorityNature:
@@ -252,15 +276,18 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                       type:
                           selectedType, // Utiliza el tipo seleccionado del dropdown
                     );
-    
+
                     bool saveSuccessful =
                         await DBHelper.saveCelestialBody(celestialBody);
-    
+
                     if (saveSuccessful) {
                       // Mostrar el SnackBar después de guardar exitosamente
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text('Guardado exitosamente'),
+
                       ));
+                      await Future.delayed(Duration(seconds: 1));
+                      Navigator.pop(context);
                     } else {
                       // Mostrar un mensaje en caso de que la operación de guardado falle
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -283,7 +310,7 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                     },
                   ),
                 ),
-                child: Text("Confirm"),
+                child: const Text("Confirm"),
               ),
             ],
           ),

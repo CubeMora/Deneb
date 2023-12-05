@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_app_astronomy/src/services/image_picker.dart';
 
 import 'package:flutter_app_astronomy/src/services/local_data.dart';
 import 'package:flutter_app_astronomy/src/services/theme_helper.dart';
@@ -9,14 +8,11 @@ import 'package:flutter_app_astronomy/src/settings/constants/constants.dart';
 import 'package:flutter_app_astronomy/src/settings/constants/image_constant.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
-import 'package:flutter_app_astronomy/src/services/db_helper.dart';
 
 import 'components/custom_app_bar.dart';
 import 'components/homepage_item_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-
   const HomeScreen({super.key});
 
   @override
@@ -24,7 +20,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -36,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       backgroundColor: appTheme.orange50,
       appBar: _buildAppBar(context),
@@ -44,7 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
           future: LocalData().celestialBodyList,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: LoadingAnimationWidget.beat(color: Colors.black, size: 60.0));
+              return Center(
+                  child: LoadingAnimationWidget.beat(
+                      color: Colors.black, size: 60.0));
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
@@ -64,10 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             return GestureDetector(
                               onTap: () {
                                 //ImagePickerService(context).openPickerDialog();
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                  content: Text('Added'),
-                                ));
+                                Navigator.pushNamed(context, '/addPlanet');
                               },
                               child: Container(
                                   margin: const EdgeInsets.only(right: 15),
@@ -229,9 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const Spacer(),
             IconButton(
               icon: SvgPicture.asset(ImageConstant.svgBxPlanetBlack900),
-              onPressed: () {
-                Navigator.pushNamed(context, '/addPlanet');
-              },
+              onPressed: () {},
             ),
           ]),
     );
