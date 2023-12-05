@@ -33,25 +33,30 @@ class HomeScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
-                    LocalData().celestialBodyList.length + 1, (index) {
+                        LocalData().celestialBodyList.length + 1, (index) {
                   if (index == LocalData().celestialBodyList.length) {
                     // This is the extra container with the plus icon
-
-                    onTap: () {
-                      ImagePickerService(context).openPickerDialog();
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Added'),
-                      ));
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 15),
-                      decoration: BoxDecoration(
-                        color: const Color(0XFFF9DB80),
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      child: const Center(child: Icon(CupertinoIcons.add, size: 50.0,),)
-                    ),
-                  );
+                    return GestureDetector(
+                      onTap: () {
+                        ImagePickerService(context).openPickerDialog();
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text('Added'),
+                        ));
+                      },
+                      child: Container(
+                          margin: const EdgeInsets.only(right: 15),
+                          decoration: BoxDecoration(
+                            color: const Color(0XFFF9DB80),
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              CupertinoIcons.add,
+                              size: 50.0,
+                            ),
+                          )),
+                    );
                   }
 
                   final celestialBody = LocalData().celestialBodyList[index];
@@ -77,8 +82,17 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ).animate().moveX(begin:  80.0, delay: Duration(milliseconds: 300 * index)).fadeIn(duration: Duration(milliseconds: 220 * index));
-                }).animate().moveX(begin:  30.0, delay: const Duration(milliseconds: 100)).fadeIn(duration: const Duration(milliseconds: 220 )),
+                  )
+                      .animate()
+                      .moveX(
+                          begin: 80.0,
+                          delay: Duration(milliseconds: 300 * index))
+                      .fadeIn(duration: Duration(milliseconds: 220 * index));
+                })
+                    .animate()
+                    .moveX(
+                        begin: 30.0, delay: const Duration(milliseconds: 100))
+                    .fadeIn(duration: const Duration(milliseconds: 220)),
               ),
             ),
           ),
@@ -87,7 +101,6 @@ class HomeScreen extends StatelessWidget {
           _buildHomePage(context)
         ],
       ),
-    
     );
   }
 

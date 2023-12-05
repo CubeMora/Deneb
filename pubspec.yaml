@@ -13,6 +13,7 @@ dependencies:
   cached_network_image: ^3.2.1
   camera: ^0.10.5+5
   cupertino_icons: ^1.0.5
+  easy_image_viewer: ^1.2.1
   extended_image: ^8.1.1
   flutter:
     sdk: flutter

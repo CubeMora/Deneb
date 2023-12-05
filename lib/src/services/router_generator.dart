@@ -15,7 +15,12 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case '/addPlanet':
         return MaterialPageRoute(builder: (_) => AddNewPlanetScreen());
+      case '/image':
+        if(args is String){
+          return MaterialPageRoute(builder: (_) => ImageViewerScreen(imageProvider: args,));
 
+        }
+        return _errorRoute();
       case '/details':
         if (args is CelestialBody) {
           return MaterialPageRoute(

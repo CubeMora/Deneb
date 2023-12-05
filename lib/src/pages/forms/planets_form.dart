@@ -99,9 +99,9 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
               onPressed: () {
                 _formKey.currentState!.validate();
 
-                ImagePickerService(
-                  context,
-                ).openSinglePickerDialog();
+                // ImagePickerService(
+                //   context,
+                // ).openSinglePickerDialog();
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text('Added'),
                 ));
