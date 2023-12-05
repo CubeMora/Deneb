@@ -10,8 +10,9 @@ class DBHelper {
       join(dbPath, 'deneb_DB.db'),
       onCreate: (db, version) {
         db.execute(
-          "CREATE TABLE celestial_bodies(id INTEGER PRIMARY KEY, name TEXT, description TEXT, type TEXT, majorityNature TEXT, size REAL, distanceFromEarth REAL)",
+          "CREATE TABLE celestial_bodies(id INTEGER PRIMARY KEY, name TEXT, description TEXT, image TEXT, type TEXT, majorityNature TEXT, size REAL, distanceFromEarth REAL, color INTEGER)",
         );
+
         db.execute(
           "CREATE TABLE celestial_body_photos(id INTEGER PRIMARY KEY, imagePath TEXT, celestialBodyId INTEGER)",
         );
@@ -51,6 +52,15 @@ class DBHelper {
     }
   }
 
+  static Future<void> insertCelestialBody(CelestialBody celestialBody) async {
+    final db = await DBHelper.database();
+    await db.insert(
+      'celestial_bodies',
+      celestialBody.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
   static Future<List<CelestialBody>> getCelestialBodies() async {
     final db = await DBHelper.database();
     final List<Map<String, dynamic>> maps = await db.query('celestial_bodies');
@@ -69,7 +79,8 @@ class DBHelper {
     );
   }
 
-  static Future<List<CelestialBodyPhoto>> getCelestialBodyPhotos(int celestialBodyId) async {
+  static Future<List<CelestialBodyPhoto>> getCelestialBodyPhotos(
+      int celestialBodyId) async {
     final db = await DBHelper.database();
 
     final List<Map<String, dynamic>> maps = await db.query(

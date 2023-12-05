@@ -18,7 +18,6 @@ class CelestialBodiesImageGrid extends StatelessWidget {
 
   final int celestialBodyId;
 
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<CelestialBodyPhoto>>(
@@ -36,93 +35,102 @@ class CelestialBodiesImageGrid extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.1,
               ),
               Text("Gallery", style: theme.textTheme.headlineMedium),
-              GridView.builder(
-                shrinkWrap: true,
-                clipBehavior: Clip.hardEdge,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                ),
-                itemCount: snapshot.data!.length,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == 0) {
-                    return _buildFirstItem(context);
-                  } else {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/image', arguments: snapshot.data![index].imagePath);
-                        
-                      },
-                      child: GridAnimatorWidget(
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.all(Radius.circular(10)),
-                            child: Hero(
-                              tag: snapshot.data![index].imagePath,
-                              child: ExtendedImage.file(
-                                File(snapshot.data![index].imagePath),
-                                fit: BoxFit.cover,
-                                filterQuality: FilterQuality.low,
-                                cacheHeight: 1000,
-                                cacheWidth: 1000,
-                                scale: 0.1,
-                                enableLoadState: true,
-                                loadStateChanged: (ExtendedImageState state) {
-                                  switch (state.extendedImageLoadState) {
-                                    case LoadState.loading:
-                                      //_controller.reset();
-                                      return Image.asset(
-                                        "assets/images/ckram.gif",
-                                        fit: BoxFit.cover,
-                                      );
-                                    //break;
-                                            
-                                    case LoadState.completed:
-                                      // _controller.forward();
-                                      return GestureDetector(
-                                        onTap: () {},
-                                        child: ExtendedRawImage(
-                                          image: state.extendedImageInfo?.image,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      );
-                                    //break;
-                                    case LoadState.failed:
-                                      return GestureDetector(
-                                        child: Stack(
-                                          fit: StackFit.expand,
-                                          children: <Widget>[
-                                            Image.asset(
-                                              "assets/images/error.png",
+              snapshot.data!.isEmpty
+                  ? Center(child: _buildFirstItem(context))
+                  : GridView.builder(
+                      shrinkWrap: true,
+                      clipBehavior: Clip.hardEdge,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                      ),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index == 0) {
+                          return _buildFirstItem(context);
+                        } else {
+                          return InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/image',
+                                  arguments: snapshot.data![index].imagePath);
+                            },
+                            child: GridAnimatorWidget(
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  child: Hero(
+                                    tag: snapshot.data![index].imagePath,
+                                    child: ExtendedImage.file(
+                                      File(snapshot.data![index].imagePath),
+                                      fit: BoxFit.cover,
+                                      filterQuality: FilterQuality.low,
+                                      cacheHeight: 1000,
+                                      cacheWidth: 1000,
+                                      scale: 0.1,
+                                      enableLoadState: true,
+                                      loadStateChanged:
+                                          (ExtendedImageState state) {
+                                        switch (state.extendedImageLoadState) {
+                                          case LoadState.loading:
+                                            //_controller.reset();
+                                            return Image.asset(
+                                              "assets/images/ckram.gif",
                                               fit: BoxFit.cover,
-                                            ),
-                                            const Positioned(
-                                              bottom: 0.0,
-                                              left: 0.0,
-                                              right: 0.0,
-                                              child: Text(
-                                                "load image failed, click to reload",
-                                                textAlign: TextAlign.center,
+                                            );
+                                          //break;
+
+                                          case LoadState.completed:
+                                            // _controller.forward();
+                                            return GestureDetector(
+                                              onTap: () {},
+                                              child: ExtendedRawImage(
+                                                image: state
+                                                    .extendedImageInfo?.image,
+                                                fit: BoxFit.cover,
                                               ),
-                                            )
-                                          ],
-                                        ),
-                                        onTap: () {
-                                          state.reLoadImage();
-                                        },
-                                      );
-                                    // break;
-                                  }
-                                },
+                                            );
+                                          //break;
+                                          case LoadState.failed:
+                                            return GestureDetector(
+                                              child: Stack(
+                                                fit: StackFit.expand,
+                                                children: <Widget>[
+                                                  Image.asset(
+                                                    "assets/images/error.png",
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                  const Positioned(
+                                                    bottom: 0.0,
+                                                    left: 0.0,
+                                                    right: 0.0,
+                                                    child: Text(
+                                                      "load image failed, click to reload",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              onTap: () {
+                                                state.reLoadImage();
+                                              },
+                                            );
+                                          // break;
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ).animate().fadeIn(duration: const Duration(milliseconds: 600), curve: Curves.ease),
-                    );
-                  }
-                },
-              ),
+                            ).animate().fadeIn(
+                                duration: const Duration(milliseconds: 600),
+                                curve: Curves.ease),
+                          );
+                        }
+                      },
+                    ),
             ],
           );
         }

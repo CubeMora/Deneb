@@ -8,99 +8,128 @@ import 'package:flutter_app_astronomy/src/services/theme_helper.dart';
 import 'package:flutter_app_astronomy/src/settings/constants/constants.dart';
 import 'package:flutter_app_astronomy/src/settings/constants/image_constant.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'components/custom_app_bar.dart';
 import 'components/homepage_item_widget.dart';
 
-class HomeScreen extends StatelessWidget {
-  final ColorFilter _colorFilter =
-      const ColorFilter.mode(Colors.grey, BlendMode.srcIn);
+class HomeScreen extends StatefulWidget {
 
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    LocalData().insertDefaultCelestialBodies();
+  }
+
+  final ColorFilter _colorFilter =
+      const ColorFilter.mode(Colors.grey, BlendMode.srcIn);
+
+  @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: appTheme.orange50,
       appBar: _buildAppBar(context),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.only(left: 20),
-            child: IntrinsicWidth(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                        LocalData().celestialBodyList.length + 1, (index) {
-                  if (index == LocalData().celestialBodyList.length) {
-                    // This is the extra container with the plus icon
-                    return GestureDetector(
-                      onTap: () {
-                        ImagePickerService(context).openPickerDialog();
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                          content: Text('Added'),
-                        ));
-                      },
-                      child: Container(
-                          margin: const EdgeInsets.only(right: 15),
-                          decoration: BoxDecoration(
-                            color: const Color(0XFFF9DB80),
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              CupertinoIcons.add,
-                              size: 50.0,
-                            ),
-                          )),
-                    );
-                  }
+      body: FutureBuilder(
+          future: LocalData().celestialBodyList,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: LoadingAnimationWidget.beat(color: Colors.black, size: 60.0));
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(left: 20),
+                    child: IntrinsicWidth(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(snapshot.data.length + 1,
+                                (index) {
+                          if (index == snapshot.data.length) {
+                            // This is the extra container with the plus icon
+                            return GestureDetector(
+                              onTap: () {
+                                //ImagePickerService(context).openPickerDialog();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text('Added'),
+                                ));
+                              },
+                              child: Container(
+                                  margin: const EdgeInsets.only(right: 15),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0XFFF9DB80),
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: const Center(
+                                    child: Icon(
+                                      CupertinoIcons.add,
+                                      size: 50.0,
+                                    ),
+                                  )),
+                            );
+                          }
 
-                  final celestialBody = LocalData().celestialBodyList[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/details',
-                          arguments: celestialBody);
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 15),
-                      decoration: BoxDecoration(
-                        color: const Color(0XFFF9DB80),
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      child: Hero(
-                        tag: celestialBody.id!,
-                        child: Image.asset(
-                          celestialBody.image,
-                          height: 353,
-                          width: 249,
-                          fit: BoxFit.cover,
-                          alignment: Alignment.center,
-                        ),
+                          final celestialBody = snapshot.data[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/details',
+                                  arguments: celestialBody);
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 15),
+                              decoration: BoxDecoration(
+                                color: const Color(0XFFF9DB80),
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              child: Hero(
+                                tag: celestialBody.id!,
+                                child: Image.asset(
+                                  celestialBody.image,
+                                  height: 353,
+                                  width: 249,
+                                  fit: BoxFit.cover,
+                                  alignment: Alignment.center,
+                                ),
+                              ),
+                            ),
+                          )
+                              .animate()
+                              .moveX(
+                                  begin: 80.0,
+                                  delay: Duration(milliseconds: 300 * index))
+                              .fadeIn(
+                                  duration:
+                                      Duration(milliseconds: 220 * index));
+                        })
+                            .animate()
+                            .moveX(
+                                begin: 30.0,
+                                delay: const Duration(milliseconds: 100))
+                            .fadeIn(
+                                duration: const Duration(milliseconds: 220)),
                       ),
                     ),
-                  )
-                      .animate()
-                      .moveX(
-                          begin: 80.0,
-                          delay: Duration(milliseconds: 300 * index))
-                      .fadeIn(duration: Duration(milliseconds: 220 * index));
-                })
-                    .animate()
-                    .moveX(
-                        begin: 30.0, delay: const Duration(milliseconds: 100))
-                    .fadeIn(duration: const Duration(milliseconds: 220)),
-              ),
-            ),
-          ),
-          const SizedBox(height: 29),
-          _buildHomeActions(context),
-          _buildHomePage(context)
-        ],
-      ),
+                  ),
+                  const SizedBox(height: 29),
+                  _buildHomeActions(context),
+                  _buildHomePage(context)
+                ],
+              );
+            }
+          }),
     );
   }
 
@@ -121,9 +150,9 @@ class HomeScreen extends StatelessWidget {
               width: 14,
             );
           },
-          itemCount: LocalData().celestialBodyList.length,
+          itemCount: LocalData().celestialBodyListForSection.length,
           itemBuilder: (context, index) {
-            final celestialBody = LocalData().celestialBodyList;
+            final celestialBody = LocalData().celestialBodyListForSection;
             return HomepageItemWidget(
               celestialBody: celestialBody[index],
             );

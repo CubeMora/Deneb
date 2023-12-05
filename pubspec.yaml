@@ -24,6 +24,7 @@ dependencies:
   google_nav_bar: ^5.0.6
   image_picker: ^1.0.4
   line_icons: ^2.0.3
+  loading_animation_widget: ^1.2.0+4
   path_provider: ^2.1.1
   shaky_animated_listview: ^0.0.5
   sqflite: ^2.3.0
