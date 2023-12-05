@@ -35,7 +35,7 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
   final List<String> majorityNatureOptions = ['Rock', 'Gas', 'Ice'];
   final List<String> typeOptions = ['Rocky', 'Gas Giant', 'Ice Giant'];
 
-  Color selectedColor = Colors.red; // Default color
+  Color selectedColor = Colors.red; // color
   String selectedMajorityNature = 'Rock'; // Default majorityNature
   String selectedType = 'Rocky'; // Default type
   String selectedColorName = 'Red'; // Set a default color name
