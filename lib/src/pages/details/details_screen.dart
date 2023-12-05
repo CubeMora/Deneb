@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_app_astronomy/src/pages/details/celestial_bodies_image_grid.dart';
 import 'package:flutter_app_astronomy/src/pages/details/components/custom_painter.dart';
-import 'package:flutter_app_astronomy/src/pages/details/components/svg_icon.dart';
-import 'package:flutter_app_astronomy/src/settings/constants/image_constant.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
@@ -204,7 +202,7 @@ class _DetailsScreenState extends State<DetailsScreen>
                         MediaQuery.of(context).size.width,
                         ((MediaQuery.of(context).size.height) + 150)
                             .toDouble()),
-                    painter: RPSCustomPainter(),
+                    painter: RPSCustomPainter(gradientColor:  widget.celestialBody.color),
                   ).animate()
                           .fadeIn(duration: const Duration(milliseconds: 600))
                           .moveY(begin: -100, curve: Curves.ease),
