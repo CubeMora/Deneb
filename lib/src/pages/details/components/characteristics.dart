@@ -80,6 +80,8 @@ class Characteristics extends StatelessWidget {
                     ),
                   ),
                   Text(celestialBody.type),
+                  Spacer(),
+                  Text("Distance from earth: ${celestialBody.distanceFromEarth} KM")
               ],
             ),
       ],

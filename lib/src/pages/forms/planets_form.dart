@@ -30,14 +30,19 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
     Colors.red,
     Colors.blue,
     Colors.green,
-    Colors.yellow
+    Colors.yellow,
+    Colors.amber,
+    Colors.black,
+    Colors.teal,
+    Colors.deepPurple,
+    Colors.pink
   ];
   final List<String> majorityNatureOptions = ['Rock', 'Gas', 'Ice'];
   final List<String> typeOptions = ['Rocky', 'Gas Giant', 'Ice Giant'];
 
   Color selectedColor = Colors.red; // color
   String selectedMajorityNature = 'Rock'; // Default majorityNature
-  String selectedType = 'Rocky'; // Default type
+  String selectedType = 'Planet'; // Default type
   String selectedColorName = 'Red'; // Set a default color name
   String? selectedImagePath;
 
@@ -50,6 +55,16 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
       return 'Green';
     } else if (color == Colors.yellow) {
       return 'Yellow';
+    } else if (color == Colors.amber) {
+      return 'Amber';
+    } else if (color == Colors.black) {
+      return 'Black';
+    } else if (color == Colors.teal) {
+      return 'Teal';
+    } else if (color == Colors.deepPurple) {
+      return 'Purple';
+    } else if (color == Colors.pink) {
+      return 'Pink';
     } else {
       // Handle other colors as needed
       return 'Unknown';
