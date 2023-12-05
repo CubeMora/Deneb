@@ -15,6 +15,7 @@ class DBHelper {
         db.execute(
           "CREATE TABLE celestial_bodies(id INTEGER PRIMARY KEY, name TEXT, description TEXT, image TEXT, type TEXT, majorityNature TEXT, size REAL, distanceFromEarth REAL, color INTEGER)",
         );
+
         db.execute(
           "CREATE TABLE celestial_body_photos(id INTEGER PRIMARY KEY, imagePath TEXT, celestialBodyId INTEGER)",
         );
@@ -82,6 +83,15 @@ class DBHelper {
       print('Error al guardar en la base de datos: $error');
       return false; // Indicar que la operación falló
     }
+  }
+
+  static Future<void> insertCelestialBody(CelestialBody celestialBody) async {
+    final db = await DBHelper.database();
+    await db.insert(
+      'celestial_bodies',
+      celestialBody.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   static Future<List<CelestialBody>> getCelestialBodies() async {
