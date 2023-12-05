@@ -6,11 +6,14 @@ import 'package:path/path.dart';
 class DBHelper {
   static Future<Database> database() async {
     final dbPath = await getDatabasesPath();
+
+    final databasePath = join(dbPath, 'deneb_DB.db');
+
     return openDatabase(
       join(dbPath, 'deneb_DB.db'),
       onCreate: (db, version) {
         db.execute(
-          "CREATE TABLE celestial_bodies(id INTEGER PRIMARY KEY, name TEXT, description TEXT, type TEXT, majorityNature TEXT, size REAL, distanceFromEarth REAL)",
+          "CREATE TABLE celestial_bodies(id INTEGER PRIMARY KEY, name TEXT, description TEXT, image TEXT, type TEXT, majorityNature TEXT, size REAL, distanceFromEarth REAL, color INTEGER)",
         );
         db.execute(
           "CREATE TABLE celestial_body_photos(id INTEGER PRIMARY KEY, imagePath TEXT, celestialBodyId INTEGER)",
@@ -28,26 +31,56 @@ class DBHelper {
     await db.setVersion(1);
   }
 
-  static Future<void> saveCelestialBody(CelestialBody celestialBody) async {
-    final db = await DBHelper.database();
-    final List<Map<String, dynamic>> maps = await db.query(
-      'celestial_bodies',
-      where: 'id = ?',
-      whereArgs: [celestialBody.id],
-    );
-    if (maps.isNotEmpty) {
-      await db.update(
+  // static Future<void> saveCelestialBody(CelestialBody celestialBody) async {
+  //   final db = await DBHelper.database();
+  //   final List<Map<String, dynamic>> maps = await db.query(
+  //     'celestial_bodies',
+  //     where: 'id = ?',
+  //     whereArgs: [celestialBody.id],
+  //   );
+  //   if (maps.isNotEmpty) {
+  //     await db.update(
+  //       'celestial_bodies',
+  //       celestialBody.toMap(),
+  //       where: 'name = ?',
+  //       whereArgs: [celestialBody.name],
+  //     );
+  //   } else {
+  //     await db.insert(
+  //       'celestial_bodies',
+  //       celestialBody.toMap(),
+  //       conflictAlgorithm: ConflictAlgorithm.replace,
+  //     );
+  //   }
+  // }
+
+  static Future<bool> saveCelestialBody(CelestialBody celestialBody) async {
+    try {
+      final db = await database();
+      final List<Map<String, dynamic>> maps = await db.query(
         'celestial_bodies',
-        celestialBody.toMap(),
-        where: 'name = ?',
-        whereArgs: [celestialBody.name],
+        where: 'id = ?',
+        whereArgs: [celestialBody.id],
       );
-    } else {
-      await db.insert(
-        'celestial_bodies',
-        celestialBody.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      if (maps.isNotEmpty) {
+        await db.update(
+          'celestial_bodies',
+          celestialBody.toMap(),
+          where: 'name = ?',
+          whereArgs: [celestialBody.name],
+        );
+      } else {
+        await db.insert(
+          'celestial_bodies',
+          celestialBody.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+
+      return true; // Indicar que la operación fue exitosa
+    } catch (error) {
+      print('Error al guardar en la base de datos: $error');
+      return false; // Indicar que la operación falló
     }
   }
 
@@ -69,7 +102,8 @@ class DBHelper {
     );
   }
 
-  static Future<List<CelestialBodyPhoto>> getCelestialBodyPhotos(int celestialBodyId) async {
+  static Future<List<CelestialBodyPhoto>> getCelestialBodyPhotos(
+      int celestialBodyId) async {
     final db = await DBHelper.database();
 
     final List<Map<String, dynamic>> maps = await db.query(

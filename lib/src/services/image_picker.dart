@@ -11,9 +11,9 @@ import 'package:image_picker/image_picker.dart';
 class ImagePickerService {
   ImagePickerService(this.context);
 
-
   final BuildContext context;
   int selectedCelestialBody = 0;
+  String? selectedImagePath; // Add this variable
 
   Future<void> openPickerDialog() async {
     return showDialog(
@@ -73,7 +73,6 @@ class ImagePickerService {
                 onPressed: () async {
                   Navigator.of(context).pop(); // close the dialog
                   await pickImageByFile(selectedId: selectedCelestialBody);
-               
                 },
               ),
             ],
@@ -92,7 +91,6 @@ class ImagePickerService {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: ElevatedButton.icon(
@@ -101,7 +99,6 @@ class ImagePickerService {
                   onPressed: () async {
                     Navigator.of(context).pop(); // close the dialog
                     await pickImageByCamera(selectedId: celestialBody);
-                 
                   },
                 ),
               ),
@@ -113,10 +110,45 @@ class ImagePickerService {
                   onPressed: () async {
                     Navigator.of(context).pop(); // close the dialog
                     await pickImageByFile(selectedId: celestialBody);
-              
-                    
                   },
                 ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<String?> openPickerDialogAddPlanet() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add new photo'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.camera),
+                  label: const Text('Camera'),
+                  onPressed: () async {
+                    Navigator.of(context).pop(); // close the dialog
+                    return await pickImageByCamera(
+                        selectedId: selectedCelestialBody);
+                  },
+                ),
+              ),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.image),
+                label: const Text('Gallery'),
+                onPressed: () async {
+                  Navigator.of(context).pop(); // close the dialog
+                  return await pickImageByFile(
+                      selectedId: selectedCelestialBody);
+                },
               ),
             ],
           ),
@@ -154,8 +186,4 @@ class ImagePickerService {
       ));
     }
   }
-
-  
-
-
 }

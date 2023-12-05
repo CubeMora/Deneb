@@ -8,15 +8,35 @@ import 'package:flutter_app_astronomy/src/services/theme_helper.dart';
 import 'package:flutter_app_astronomy/src/settings/constants/constants.dart';
 import 'package:flutter_app_astronomy/src/settings/constants/image_constant.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
+import 'package:flutter_app_astronomy/src/services/db_helper.dart';
 
 import 'components/custom_app_bar.dart';
 import 'components/homepage_item_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late List<CelestialBody> celestialBodies;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCelestialBodies();
+  }
+
+  Future<void> _loadCelestialBodies() async {
+    celestialBodies = await DBHelper.getCelestialBodies();
+    setState(() {});
+  }
+
   final ColorFilter _colorFilter =
       const ColorFilter.mode(Colors.grey, BlendMode.srcIn);
-
-  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
