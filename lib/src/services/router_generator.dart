@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
+import 'package:flutter_app_astronomy/src/pages/forms/planets_form.dart';
 import 'package:flutter_app_astronomy/src/services/screen_reference.dart';
 
 class RouteGenerator {
@@ -12,6 +13,9 @@ class RouteGenerator {
       //   return MaterialPageRoute(builder: (_) => const ImageGridView());
       case '/home':
         return MaterialPageRoute(builder: (_) => HomeScreen());
+      case '/addPlanet':
+        return MaterialPageRoute(builder: (_) => AddNewPlanetScreen());
+
       case '/details':
         if (args is CelestialBody) {
           return MaterialPageRoute(

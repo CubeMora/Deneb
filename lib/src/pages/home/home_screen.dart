@@ -24,7 +24,6 @@ class HomeScreen extends StatelessWidget {
       appBar: _buildAppBar(context),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-
         children: <Widget>[
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -34,25 +33,31 @@ class HomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
                     LocalData().celestialBodyList.length + 1, (index) {
-
                   if (index == LocalData().celestialBodyList.length) {
                     // This is the extra container with the plus icon
                     return GestureDetector(
-                    onTap: () {
-                      ImagePickerService(context ,celestialBody: LocalData().celestialBodyList[2]).openPickerDialog();
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Added'),
-                      ));
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 15),
-                      decoration: BoxDecoration(
-                        color: const Color(0XFFF9DB80),
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      child: const Center(child: Icon(CupertinoIcons.add, size: 50.0,),)
-                    ),
-                  );
+                      onTap: () {
+                        ImagePickerService(
+                          context,
+                        ).openPickerDialog();
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text('Added'),
+                        ));
+                      },
+                      child: Container(
+                          margin: const EdgeInsets.only(right: 15),
+                          decoration: BoxDecoration(
+                            color: const Color(0XFFF9DB80),
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              CupertinoIcons.add,
+                              size: 50.0,
+                            ),
+                          )),
+                    );
                   }
 
                   final celestialBody = LocalData().celestialBodyList[index];
@@ -83,10 +88,8 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-
           const SizedBox(height: 29),
           _buildHomeActions(context),
-
           _buildHomePage(context)
         ],
       ),
@@ -194,7 +197,9 @@ class HomeScreen extends StatelessWidget {
             const Spacer(),
             IconButton(
               icon: SvgPicture.asset(ImageConstant.svgBxPlanetBlack900),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/addPlanet');
+              },
             ),
           ]),
     );
