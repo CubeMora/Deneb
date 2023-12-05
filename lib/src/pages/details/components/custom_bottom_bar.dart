@@ -38,7 +38,7 @@ class CustomBottomBarState extends State<CustomBottomBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 45,
+      height: 70,
       decoration: const BoxDecoration(),
       child: BottomNavigationBar(
         backgroundColor: Colors.transparent,
@@ -52,14 +52,14 @@ class CustomBottomBarState extends State<CustomBottomBar> {
           return BottomNavigationBarItem(
             icon: CustomImageView(
               imagePath: bottomMenuList[index].icon,
-              height: 24,
-              width: 24,
+              height: 25,
+              width: 25,
               color: appTheme.black900,
             ),
             activeIcon: CustomImageView(
               imagePath: bottomMenuList[index].activeIcon,
-              height: 24,
-              width: 24,
+              height: 30,
+              width: 30,
               color: appTheme.deepOrange300,
             ),
             label: '',
