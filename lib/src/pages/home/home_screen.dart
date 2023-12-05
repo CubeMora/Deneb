@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_app_astronomy/src/services/image_picker.dart';
 
 import 'package:flutter_app_astronomy/src/services/local_data.dart';
@@ -39,7 +40,7 @@ class HomeScreen extends StatelessWidget {
                     // This is the extra container with the plus icon
                     return GestureDetector(
                     onTap: () {
-                      ImagePickerService(context ,celestialBody: LocalData().celestialBodyList[2]).openPickerDialog();
+                      ImagePickerService(context).openPickerDialog();
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text('Added'),
                       ));
@@ -78,25 +79,18 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  );
-                }),
+                  ).animate().moveX(begin:  80.0, delay: Duration(milliseconds: 300 * index)).fadeIn(duration: Duration(milliseconds: 220 * index));
+                }).animate().moveX(begin:  30.0, delay: const Duration(milliseconds: 100)).fadeIn(duration: const Duration(milliseconds: 220 )),
               ),
             ),
           ),
 
           const SizedBox(height: 29),
           _buildHomeActions(context),
-
           _buildHomePage(context)
         ],
       ),
-      // bottomNavigationBar: Padding(
-      //   padding: const EdgeInsets.only(left: 30.0, right: 30),
-      //   child: Divider(
-      //     color: Colors.grey.shade700,
-      //     thickness: 5,
-      //   ),
-      // ),
+    
     );
   }
 
@@ -129,7 +123,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  //Makes the appbar based on a custom app bar located on local custom widget
+  ///+Makes the appbar based on a custom app bar located on local custom widget
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return CustomAppBar(
       title: const Padding(

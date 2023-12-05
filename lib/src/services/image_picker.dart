@@ -9,9 +9,9 @@ import 'package:flutter_app_astronomy/src/services/theme_helper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerService {
-  ImagePickerService(this.context, {required this.celestialBody});
+  ImagePickerService(this.context);
 
-  final CelestialBody celestialBody;
+
   final BuildContext context;
   int selectedCelestialBody = 0;
 
@@ -120,4 +120,6 @@ class ImagePickerService {
       ));
     }
   }
+
+  
 }
