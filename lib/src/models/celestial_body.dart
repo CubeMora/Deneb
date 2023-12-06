@@ -10,9 +10,10 @@ class CelestialBody {
   final String image;
   final String type;
   final String majorityNature;
-  final double size;
-  final double distanceFromEarth;
+  final int size;
+  final int distanceFromEarth;
   final Color color;
+  final int systemId;
   CelestialBody({
     this.id,
     required this.name,
@@ -23,8 +24,8 @@ class CelestialBody {
     required this.size,
     required this.distanceFromEarth,
     required this.color,
+    required this.systemId,
   });
-
 
   CelestialBody copyWith({
     int? id,
@@ -33,9 +34,10 @@ class CelestialBody {
     String? image,
     String? type,
     String? majorityNature,
-    double? size,
-    double? distanceFromEarth,
+    int? size,
+    int? distanceFromEarth,
     Color? color,
+    int? systemId,
   }) {
     return CelestialBody(
       id: id ?? this.id,
@@ -47,6 +49,7 @@ class CelestialBody {
       size: size ?? this.size,
       distanceFromEarth: distanceFromEarth ?? this.distanceFromEarth,
       color: color ?? this.color,
+      systemId: systemId ?? this.systemId,
     );
   }
 
@@ -61,6 +64,7 @@ class CelestialBody {
       'size': size,
       'distanceFromEarth': distanceFromEarth,
       'color': color.value,
+      'systemId': systemId,
     };
   }
 
@@ -72,47 +76,53 @@ class CelestialBody {
       image: map['image'] as String,
       type: map['type'] as String,
       majorityNature: map['majorityNature'] as String,
-      size: map['size'] as double,
-      distanceFromEarth: map['distanceFromEarth'] as double,
+      size: map['size'] is double ? map['size'].toInt() : map['size'],
+      distanceFromEarth: map['distanceFromEarth'] is double
+          ? map['distanceFromEarth'].toInt()
+          : map['distanceFromEarth'],
       color: Color(map['color'] as int),
+      systemId:
+          map['systemId'] is double ? map['systemId'].toInt() : map['systemId'],
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory CelestialBody.fromJson(String source) => CelestialBody.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory CelestialBody.fromJson(String source) =>
+      CelestialBody.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'CelestialBody(id: $id, name: $name, description: $description, image: $image, type: $type, majorityNature: $majorityNature, size: $size, distanceFromEarth: $distanceFromEarth, color: $color)';
+    return 'CelestialBody(id: $id, name: $name, description: $description, image: $image, type: $type, majorityNature: $majorityNature, size: $size, distanceFromEarth: $distanceFromEarth, color: $color, systemId: $systemId)';
   }
 
   @override
   bool operator ==(covariant CelestialBody other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.name == name &&
-      other.description == description &&
-      other.image == image &&
-      other.type == type &&
-      other.majorityNature == majorityNature &&
-      other.size == size &&
-      other.distanceFromEarth == distanceFromEarth &&
-      other.color == color;
+
+    return other.id == id &&
+        other.name == name &&
+        other.description == description &&
+        other.image == image &&
+        other.type == type &&
+        other.majorityNature == majorityNature &&
+        other.size == size &&
+        other.distanceFromEarth == distanceFromEarth &&
+        other.color == color &&
+        other.systemId == systemId;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      name.hashCode ^
-      description.hashCode ^
-      image.hashCode ^
-      type.hashCode ^
-      majorityNature.hashCode ^
-      size.hashCode ^
-      distanceFromEarth.hashCode ^
-      color.hashCode;
+        name.hashCode ^
+        description.hashCode ^
+        image.hashCode ^
+        type.hashCode ^
+        majorityNature.hashCode ^
+        size.hashCode ^
+        distanceFromEarth.hashCode ^
+        color.hashCode ^
+        systemId.hashCode;
   }
 }

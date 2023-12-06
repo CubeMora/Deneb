@@ -14,11 +14,18 @@ class RouteGenerator {
       case '/home':
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case '/addPlanet':
-        return MaterialPageRoute(builder: (_) => AddNewPlanetScreen());
-      case '/image':
-        if(args is String){
-          return MaterialPageRoute(builder: (_) => ImageViewerScreen(imageProvider: args,));
+        if (args is int) {
+          return MaterialPageRoute(
+              builder: (_) => AddNewPlanetScreen(systemId: args));
+        }
 
+        return _errorRoute();
+      case '/image':
+        if (args is String) {
+          return MaterialPageRoute(
+              builder: (_) => ImageViewerScreen(
+                    imageProvider: args,
+                  ));
         }
         return _errorRoute();
       case '/details':
@@ -29,6 +36,9 @@ class RouteGenerator {
                   ));
         }
         return _errorRoute();
+
+      case '/addSystem':
+        return MaterialPageRoute(builder: (_) => AddNewSystemScreen());
 
       default:
         return _errorRoute();
