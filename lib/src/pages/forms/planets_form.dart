@@ -268,7 +268,7 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                       description: _descriptionController.text,
                       size: double.parse(_sizeController.text),
                       distanceFromEarth: double.parse(_distanceController.text),
-                      image: ImageConstant.gifKram, //selectedImagePath ?? 
+                      image: selectedImagePath ?? ImageConstant.gifKram,
                       color:
                           selectedColor, // Utiliza el color seleccionado del dropdown
                       majorityNature:
