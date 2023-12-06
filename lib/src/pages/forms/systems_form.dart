@@ -1,13 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app_astronomy/src/models/celestial_system.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 
 import 'package:flutter_app_astronomy/src/services/db_helper.dart';
@@ -90,7 +88,7 @@ class _AddNewSystemScreenState extends State<AddNewSystemScreen> {
                                     .showSnackBar(const SnackBar(
                                   content: Text('Saved succesfully'),
                                 ));
-                                await Future.delayed(Duration(seconds: 1));
+                                await Future.delayed(const Duration(seconds: 1));
                                 Navigator.pushNamedAndRemoveUntil(
                                     context, '/home', (_) => false);
                               } else {

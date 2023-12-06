@@ -6,13 +6,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 
 import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
 import 'package:flutter_app_astronomy/src/services/db_helper.dart';
 import 'package:flutter_app_astronomy/src/services/image_picker.dart';
-import 'package:flutter_app_astronomy/src/services/local_data.dart';
 import 'package:flutter_app_astronomy/src/settings/constants/image_constant.dart';
 
 final _formKey = GlobalKey<FormState>();
@@ -49,7 +47,7 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
   ];
   final List<String> majorityNatureOptions = ['Rock', 'Gas', 'Liquid', 'Solid'];
   final List<String> typeOptions = [
-    'System',
+    //'System',
     'Star',
     'Planet',
     'Asteroid',
@@ -62,7 +60,6 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
   String selectedMajorityNature = 'Rock'; // Default majorityNature
   String selectedType = 'Planet'; // Default type
   String selectedColorName = 'Red'; // Set a default color name
-  String? selectedImagePath;
 
   String _getColorName(Color color) {
     if (color == Colors.red) {
@@ -139,8 +136,8 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         child: TextFormField(
                           controller: _descriptionController,
-                          validator: (description) => description!.length < 10
-                              ? 'Description should be at least 10 characters'
+                          validator: (description) => description!.length < 5
+                              ? 'Description should be at least 5 characters'
                               : null,
                           decoration: InputDecoration(
                             hintText: "Description",
@@ -205,6 +202,8 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                           onChanged: (String? value) {
                             setState(() {
                               selectedColorName = value!;
+                              selectedColor = colorOptions.firstWhere(
+                                  (color) => _getColorName(color) == value);
                             });
                           },
                           decoration: const InputDecoration(
@@ -260,7 +259,7 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                   padding: const EdgeInsets.all(10.0),
                   child: _selectedImage != null
                       ? Image.file(File(_selectedImage!))
-                      : Text("Please Select an image"),
+                      : const Text("Please Select an image"),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -271,7 +270,6 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                       _selectedImage = await ImagePickerService(context)
                           .openPickerDialogAddPlanet();
                       setState(() {});
-                      print(selectedImagePath);
                     },
                   ),
                 ),
@@ -279,7 +277,6 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                   padding: const EdgeInsets.only(bottom: 20.0),
                   child: ElevatedButton(
                     onPressed: () async {
-                      print(selectedImagePath);
                       if (_formKey.currentState?.validate() == true) {
                         _formKey.currentState?.save();
 
@@ -289,13 +286,12 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                             size: int.parse(_sizeController.text),
                             distanceFromEarth:
                                 int.parse(_distanceController.text),
-                            image: ImageConstant.gifKram, //selectedImagePath ??
-                            color:
-                                selectedColor, // Utiliza el color seleccionado del dropdown
-                            majorityNature:
-                                selectedMajorityNature, // Utiliza la naturaleza seleccionada del dropdown
+                            image: _selectedImage ?? ImageConstant.gifKram,
+                            color: selectedColor,
+                            majorityNature: selectedMajorityNature,
                             type: selectedType,
-                            systemId: widget.systemId);
+                            systemId: widget.systemId,
+                            isUserPhoto: _selectedImage != null ? true : false);
 
                         bool saveSuccessful =
                             await DBHelper.saveCelestialBody(celestialBody);
@@ -306,7 +302,7 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
                               .showSnackBar(const SnackBar(
                             content: Text('Guardado exitosamente'),
                           ));
-                          await Future.delayed(Duration(seconds: 1));
+                          await Future.delayed(const Duration(seconds: 1));
                           Navigator.pushNamedAndRemoveUntil(
                               context, '/home', (_) => false);
                         } else {
@@ -343,65 +339,5 @@ class _AddNewPlanetScreenState extends State<AddNewPlanetScreen> {
         ),
       ),
     );
-  }
-
-  Future openSinglePickerDialog() async {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Add new photo '),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.camera),
-                  label: const Text('Camera'),
-                  onPressed: () async {
-                    Navigator.of(context).pop(); // close the dialog
-                    await _pickImageFromCamera();
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.image),
-                  label: const Text('Gallery'),
-                  onPressed: () async {
-                    Navigator.of(context).pop(); // close the dialog
-                    await _pickImageFromGallery();
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Future _pickImageFromCamera() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.camera);
-    if (returnedImage != null) {
-      setState(() {
-        _selectedImage = File(returnedImage.path).toString();
-      });
-      return returnedImage.path;
-    }
-  }
-
-  Future _pickImageFromGallery() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (returnedImage != null) {
-      setState(() {
-        _selectedImage = File(returnedImage.path).toString();
-      });
-      return returnedImage.path;
-    }
   }
 }

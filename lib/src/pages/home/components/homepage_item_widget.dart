@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
 import 'package:flutter_app_astronomy/src/models/celestial_system.dart';
 
 // ignore: must_be_immutable

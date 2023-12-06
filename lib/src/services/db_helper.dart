@@ -1,7 +1,6 @@
 import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
 import 'package:flutter_app_astronomy/src/models/celestial_body_photo.dart';
 import 'package:flutter_app_astronomy/src/models/celestial_system.dart';
-import 'package:flutter_app_astronomy/src/models/celestial_system_bodies.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -9,13 +8,12 @@ class DBHelper {
   static Future<Database> database() async {
     final dbPath = await getDatabasesPath();
 
-    final databasePath = join(dbPath, 'deneb_DB.db');
 
     return openDatabase(
       join(dbPath, 'deneb_DB.db'),
       onCreate: (db, version) {
         db.execute(
-          "CREATE TABLE celestial_bodies(id INTEGER PRIMARY KEY, name TEXT, description TEXT, image TEXT, type TEXT, majorityNature TEXT, size REAL, distanceFromEarth REAL, color INTEGER, systemId REAL)",
+          "CREATE TABLE celestial_bodies(id INTEGER PRIMARY KEY, name TEXT, description TEXT, image TEXT, type TEXT, majorityNature TEXT, size REAL, distanceFromEarth REAL, color INTEGER, systemId REAL, isUserPhoto INTEGER)",
         );
 
         db.execute(
@@ -24,10 +22,6 @@ class DBHelper {
 
         db.execute(
           "CREATE TABLE celestial_system(id INTEGER PRIMARY KEY, name TEXT, image TEXT)",
-        );
-
-        db.execute(
-          "CREATE TABLE celestial_system_bodies(idSystem INTEGER, idBody INTEGER)", //NO
         );
       },
       version: 1,
@@ -65,10 +59,10 @@ class DBHelper {
         );
       }
 
-      return true; // Indicar que la operación fue exitosa
+      return true;
     } catch (error) {
       print('Error al guardar en la base de datos: $error');
-      return false; // Indicar que la operación falló
+      return false;
     }
   }
 
@@ -99,7 +93,7 @@ class DBHelper {
     if (maps.isNotEmpty) {
       return [
         CelestialSystem.fromMap(maps.first)
-      ]; // Return a list with one element
+      ]; 
     }
 
     throw Exception('ID $id not found');
@@ -114,31 +108,6 @@ class DBHelper {
     });
   }
 
-  static Future<List<CelestialSystemBodies>> getCelestialSystemBodies(
-      int idSystem) async {
-    final db = await DBHelper.database();
-    final List<Map<String, dynamic>> maps = await db.query(
-      'celestial_system_bodies',
-      where: 'idSystem = ?',
-      whereArgs: [idSystem],
-    );
-
-    return List.generate(maps.length, (i) {
-      return CelestialSystemBodies.fromMap(maps[i]);
-    });
-  }
-
-  static Future<void> saveCelestialSystemBodies(
-      CelestialSystemBodies celestialSystemBodies) async {
-    final db = await DBHelper.database();
-    print("C deisote: $celestialSystemBodies");
-    await db.insert(
-      'celestial_system_bodies',
-      celestialSystemBodies.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
   static Future<void> insertCelestialBody(CelestialBody celestialBody) async {
     final db = await DBHelper.database();
     await db.insert(
@@ -148,17 +117,16 @@ class DBHelper {
     );
   }
 
-  static Future<List<CelestialBody>> getCelestialBodies(int systemId) async {
+  static Future<List<CelestialBody>> getCelestialBodies(int systemId,
+      {String type = ''}) async {
     final db = await DBHelper.database();
     final List<Map<String, dynamic>> maps = await db.query(
       'celestial_bodies',
-      where: 'systemId = ?',
-      whereArgs: [systemId],
+      where: type.isEmpty ? 'systemId = ?' : 'systemId = ? AND type = ?',
+      whereArgs: type.isEmpty ? [systemId] : [systemId, type],
     );
-    print(maps);
 
     return List.generate(maps.length, (i) {
-      print(maps);
       return CelestialBody.fromMap(maps[i]);
     });
   }

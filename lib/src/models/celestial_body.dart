@@ -14,6 +14,7 @@ class CelestialBody {
   final int distanceFromEarth;
   final Color color;
   final int systemId;
+  final bool isUserPhoto;
   CelestialBody({
     this.id,
     required this.name,
@@ -25,6 +26,7 @@ class CelestialBody {
     required this.distanceFromEarth,
     required this.color,
     required this.systemId,
+    required this.isUserPhoto,
   });
 
   CelestialBody copyWith({
@@ -38,6 +40,7 @@ class CelestialBody {
     int? distanceFromEarth,
     Color? color,
     int? systemId,
+    bool? isUserPhoto,
   }) {
     return CelestialBody(
       id: id ?? this.id,
@@ -50,6 +53,7 @@ class CelestialBody {
       distanceFromEarth: distanceFromEarth ?? this.distanceFromEarth,
       color: color ?? this.color,
       systemId: systemId ?? this.systemId,
+      isUserPhoto: isUserPhoto ?? this.isUserPhoto,
     );
   }
 
@@ -65,6 +69,7 @@ class CelestialBody {
       'distanceFromEarth': distanceFromEarth,
       'color': color.value,
       'systemId': systemId,
+      'isUserPhoto': isUserPhoto,
     };
   }
 
@@ -83,6 +88,8 @@ class CelestialBody {
       color: Color(map['color'] as int),
       systemId:
           map['systemId'] is double ? map['systemId'].toInt() : map['systemId'],
+      isUserPhoto:
+          map['isUserPhoto'] == 1 ? true : false, // Convert int to bool
     );
   }
 
@@ -93,7 +100,7 @@ class CelestialBody {
 
   @override
   String toString() {
-    return 'CelestialBody(id: $id, name: $name, description: $description, image: $image, type: $type, majorityNature: $majorityNature, size: $size, distanceFromEarth: $distanceFromEarth, color: $color, systemId: $systemId)';
+    return 'CelestialBody(id: $id, name: $name, description: $description, image: $image, type: $type, majorityNature: $majorityNature, size: $size, distanceFromEarth: $distanceFromEarth, color: $color, systemId: $systemId, isUserPhoto: $isUserPhoto)';
   }
 
   @override
@@ -109,7 +116,8 @@ class CelestialBody {
         other.size == size &&
         other.distanceFromEarth == distanceFromEarth &&
         other.color == color &&
-        other.systemId == systemId;
+        other.systemId == systemId &&
+        other.isUserPhoto == isUserPhoto;
   }
 
   @override
@@ -123,6 +131,7 @@ class CelestialBody {
         size.hashCode ^
         distanceFromEarth.hashCode ^
         color.hashCode ^
-        systemId.hashCode;
+        systemId.hashCode ^
+        isUserPhoto.hashCode;
   }
 }

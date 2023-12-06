@@ -1,15 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_app_astronomy/src/models/celestial_body.dart';
 import 'package:flutter_app_astronomy/src/models/celestial_system.dart';
 import 'package:flutter_app_astronomy/src/services/db_helper.dart';
-
 import 'package:flutter_app_astronomy/src/services/local_data.dart';
 import 'package:flutter_app_astronomy/src/services/theme_helper.dart';
-import 'package:flutter_app_astronomy/src/settings/constants/constants.dart';
 import 'package:flutter_app_astronomy/src/settings/constants/image_constant.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'components/custom_app_bar.dart';
@@ -25,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int selectedSystem = 1;
   String systemName = "";
+  String? filter = '';
   @override
   void initState() {
     super.initState();
@@ -40,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: appTheme.orange50,
       appBar: _buildAppBar(context),
       body: FutureBuilder(
-          future: DBHelper.getCelestialBodies(selectedSystem),
+          future: DBHelper.getCelestialBodies(selectedSystem, type: filter!),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -98,14 +99,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: const Color.fromARGB(97, 147, 147, 147),
                                 borderRadius: BorderRadius.circular(15.0),
                               ),
-                              child: Hero(
-                                tag: celestialBody.id!,
-                                child: Image.asset(
-                                  celestialBody.image,
-                                  height: 353,
-                                  width: 249,
-                                  fit: BoxFit.cover,
-                                  alignment: Alignment.center,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Hero(
+                                  tag: celestialBody.id!,
+                                  child: celestialBody.isUserPhoto
+                                      ? Image.file(
+                                          File(celestialBody.image),
+                                          height: 353,
+                                          width: 249,
+                                          cacheHeight: (MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.4)
+                                              .toInt(),
+                                          cacheWidth: (MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.6)
+                                              .toInt(),
+                                          fit: BoxFit.cover,
+                                          alignment: Alignment.center,
+                                        )
+                                      : Image.asset(
+                                          celestialBody.image,
+                                          height: 353,
+                                          width: 249,
+                                          fit: BoxFit.cover,
+                                          alignment: Alignment.center,
+                                        ),
                                 ),
                               ),
                             ),
@@ -169,7 +191,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         setState(() {
                           selectedSystem = celestialSystem[index].id!;
                           systemName = celestialSystem[index].name;
-                          print(selectedSystem);
                         });
                       },
                       child: HomepageItemWidget(
@@ -231,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontSize: 30),
             ),
             Text(
-              systemName != "" ? systemName : "Milky Way",
+              systemName != "" ? systemName : "Solar System",
               textAlign: TextAlign.start,
               style: const TextStyle(
                   fontWeight: FontWeight.w500, color: Colors.grey),
@@ -269,14 +290,109 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               onPressed: () {},
             ),
-            IconButton(
-              icon: SvgPicture.asset(
-                "assets/icons/search.svg",
-                colorFilter:
-                    const ColorFilter.mode(kTextColor, BlendMode.srcIn),
+            Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: IconButton(
+                icon: SvgPicture.asset(
+                  "assets/icons/search.svg",
+                  colorFilter:
+                      const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Select Filter'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            ListTile(
+                              title: const Text('Clear Filter'),
+                              leading: const Icon(LineIcons.trash),
+                              selected: filter == '',
+                              onTap: () {
+                                setState(() {
+                                  filter = '';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('Star'),
+                              leading: const Icon(LineIcons.star),
+                              selected: filter == 'Star',
+                              onTap: () {
+                                setState(() {
+                                  filter = 'Star';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('Planet'),
+                              leading: const Icon(LineIcons.globe),
+                              selected: filter == 'Planet',
+                              onTap: () {
+                                setState(() {
+                                  filter = 'Planet';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('Asteroid'),
+                              leading: const Icon(LineIcons.cogs),
+                              selected: filter == 'Asteroid',
+                              onTap: () {
+                                setState(() {
+                                  filter = 'Asteroid';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('Comet'),
+                              leading: const Icon(LineIcons.meteor),
+                              selected: filter == 'Comet',
+                              onTap: () {
+                                setState(() {
+                                  filter = 'Comet';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('Moon'),
+                              leading: const Icon(LineIcons.moon),
+                              selected: filter == 'Moon',
+                              onTap: () {
+                                setState(() {
+                                  filter = 'Moon';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('Unknown'),
+                              selected: filter == 'Unknown',
+                              leading: const Icon(LineIcons.question),
+                              onTap: () {
+                                setState(() {
+                                  filter = 'Unknown';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
-              onPressed: () {},
             ),
+            Text(filter!.isNotEmpty ? "Filter: $filter" : ""),
             const Spacer(),
             IconButton(
               icon: SvgPicture.asset(ImageConstant.svgBxPlanetBlack900),
