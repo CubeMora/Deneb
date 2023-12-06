@@ -7,9 +7,21 @@ class ImageConstant {
 
   static String imgCard = '$imagePath/img_card.png';
 
+  static String imgTierra = '$imagePath/tierra.png';
+
   static String svgActionbar = '$imagePath/img_actionbar.svg';
 
   static String imgImage = '$imagePath/img_image.png';
+
+  static String imgLuna = '$imagePath/luna.png';
+
+  static String imgVenus = '$imagePath/venus.png';
+
+  static String imgSol = '$imagePath/sol.png';
+
+  static String imgMilkyWay = '$imagePath/milky_way.png';
+
+  static String imgSystemPlaceholder = '$imagePath/system_placeholder.png';
 
   // Splash screen images
   static String imgRectangle22475 = '$imagePath/img_rectangle_22475.png';

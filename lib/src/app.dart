@@ -4,7 +4,7 @@ import 'package:flutter_app_astronomy/src/settings/constants/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'settings/settings_controller.dart';
-import 'settings/settings_view.dart';
+
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -25,6 +25,44 @@ class MyApp extends StatelessWidget {
       listenable: settingsController,
       builder: (BuildContext context, Widget? child) {
         return MaterialApp(
+          theme: ThemeData(
+            textTheme: Theme.of(context).textTheme.apply(bodyColor: kTextColor),
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              titleTextStyle:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+            ),
+            inputDecorationTheme: const InputDecorationTheme(
+              filled: true,
+              fillColor: Color(0xFFF8F8F9),
+              hintStyle: TextStyle(
+                color: Color(0xFFB8B5C3),
+              ),
+              border: defaultOutlineInputBorder,
+              enabledBorder: defaultOutlineInputBorder,
+              focusedBorder: defaultOutlineInputBorder,
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.amber,
+                minimumSize: const Size(double.infinity, 56),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
+              ),
+            ),
+            outlinedButtonTheme: OutlinedButtonThemeData(
+              style: OutlinedButton.styleFrom(
+                primary: Colors.black,
+                minimumSize: const Size(double.infinity, 56),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
+              ),
+            ),
+          ),
           // Providing a restorationScopeId allows the Navigator built by the
           // MaterialApp to restore the navigation stack when a user leaves and
           // returns to the app after it has been killed while running in the
@@ -56,10 +94,7 @@ class MyApp extends StatelessWidget {
           // Define a light and dark color theme. Then, read the user's
           // preferred ThemeMode (light, dark, or system default) from the
           // SettingsController to display the correct theme.
-          theme: ThemeData(
-            textTheme: Theme.of(context).textTheme.apply(bodyColor: kTextColor),
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-          ),
+
           darkTheme: ThemeData.dark(),
           themeMode: settingsController.themeMode,
 
@@ -72,3 +107,8 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+const OutlineInputBorder defaultOutlineInputBorder = OutlineInputBorder(
+  borderSide: BorderSide.none,
+  borderRadius: BorderRadius.all(Radius.circular(12)),
+);
